@@ -13,8 +13,8 @@ npm run dev
 ```cmd
 # Python version: 3.11.9
 cd backend
-pip install -r requirements.txt
-flask run
+..\.venv\Scripts\python.exe -m pip install -r requirements.txt
+..\.venv\Scripts\python.exe -m flask run
 ```
 注：我使用Pycharm作为IDE，Python虚拟环境位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python。
 
