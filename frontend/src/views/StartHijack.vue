@@ -78,7 +78,7 @@ const handleClick = async () => {
     isLoading.value = true;
 
     // 发送 POST 请求到 Flask 后端
-    const response = await axios.post('http://localhost:5000/api/endpoint', {
+    const response = await axios.post('http://localhost:5000/api/StartHijack', {
       deviceIp: formState.deviceIp,
       port: formState.port
     });

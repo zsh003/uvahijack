@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^1.7.9",
-    "prismjs": "^1.29.0"
-  }
-}
