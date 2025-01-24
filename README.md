@@ -1,7 +1,8 @@
 # uvahijack
 基于vue+flask前后端开发的无人机劫持系统，支持前后端分离开发。
 
-前端使用vite+vue3，支持TypeScript，包含ESLint语法检查、Router-View路由支持、Pinia状态管理等。后端使用flask3开发，使用dotenv管理flask环境变量，启用CORS允许跨域请求，Flask路由、配置分离管理。
+前端使用vite+vue3，支持TypeScript，包含ESLint语法检查、Router-View路由支持、Pinia状态管理等。
+后端使用flask3开发，使用dotenv管理flask环境变量，启用CORS允许跨域请求，支持flask路由、配置分离管理。
 
 启用前端：
 ```cmd
@@ -14,9 +15,9 @@ npm run dev
 # Python version: 3.11.9
 cd backend
 ..\.venv\Scripts\python.exe -m pip install -r requirements.txt
-..\.venv\Scripts\python.exe -m flask run
+..\.venv\Scripts\python.exe -m flask run --host=0.0.0.0
 ```
-注：我使用Pycharm作为IDE，Python虚拟环境位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python。
+注：我使用Pycharm作为IDE，Python虚拟环境位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python，根据实际情况调整。
 
 若使用waitress模拟生产环境的话需要修改run.py：
 ```python
