@@ -83,9 +83,8 @@ const handleClick = async () => {
       deviceIp: formState.value.deviceIp,
       port: formState.value.port,
     });
-
     // 根据后端返回的数据执行相应操作
-    //console.log(response);
+    //console.log(response.data);
 
   } catch (error) {
     // 处理错误
