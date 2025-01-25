@@ -37,26 +37,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import TrafficDisplayGeneral from '@/views/TrafficDisplayGeneral.vue'
-import axios from 'axios'; // 使用 Axios 发送 HTTP 请求
+import { startHijack } from '@/api/StartHijack';
+import type { ReplayHijackParams } from '@/utils/types';
 
 const formLayout = 'vertical'; // 设置表单布局
 
 // 定义初始值对象
-const defaultValues = {
+const defaultValues = ref<ReplayHijackParams>({
   deviceIp: '192.168.169.1', // 设备 IP 的初始值
-  port: '8800'             // 端口的初始值
-};
+  port: 8800             // 端口的初始值
+});
 // 创建一个对象来存储表单的状态
-const formState = reactive({
-  deviceIp: '',
-  port: ''
+const formState = ref<ReplayHijackParams>({
+  deviceIp: '', // 设备 IP
+  port: 0, // 端口号
 });
 
 // 创建一个方法来重置表单状态为初始值
 const resetToDefaults = () => {
-  Object.assign(formState, defaultValues);
+  formState.value = defaultValues.value;
 };
 
 const pythonCode = ref( `import socket
@@ -77,14 +78,14 @@ const handleClick = async () => {
     // 设置按钮加载状态为 true
     isLoading.value = true;
 
-    // 发送 POST 请求到 Flask 后端
-    const response = await axios.post('http://localhost:5000/api/StartHijack', {
-      deviceIp: formState.deviceIp,
-      port: formState.port
+    // 调用 startHijack 接口
+    const response = await startHijack({
+      deviceIp: formState.value.deviceIp,
+      port: formState.value.port,
     });
 
     // 根据后端返回的数据执行相应操作
-    console.log(response.data);
+    //console.log(response);
 
   } catch (error) {
     // 处理错误

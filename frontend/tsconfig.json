@@ -7,5 +7,9 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,   //启用 esModuleInterop 是为了更好地处理 CommonJS 模块和 ES 模块之间的兼容性问题
+    "strict": true  //启用 strict 模式会同时启用 TypeScript 的所有严格类型检查选项
+  }
 }
