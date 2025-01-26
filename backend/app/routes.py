@@ -10,6 +10,7 @@ def init_routes(app):
             data = request.json
             device_ip = data.get('deviceIp')
             port = data.get('port')
+            trafficHex = data.get('trafficHex')
 
             if not device_ip or not port:
                 return jsonify({"error": "Missing deviceIp or port"}), 400
@@ -21,6 +22,7 @@ def init_routes(app):
                 "message": "Hijack started successfully",
                 "deviceIp": device_ip,
                 "port": port,
+                "trafficHex": trafficHex,
                 "result": result
             }), 200
 
@@ -33,6 +35,7 @@ def init_routes(app):
             data = request.json
             device_ip = data.get('deviceIp')
             port = data.get('port')
+            trafficHex = data.get('trafficHex')
 
             if not device_ip or not port:
                 return jsonify({"error": "Missing deviceIp or port"}), 400
@@ -44,6 +47,7 @@ def init_routes(app):
                 "message": "Hijack started successfully",
                 "deviceIp": device_ip,
                 "port": port,
+                "trafficHex": trafficHex,
                 "result": result
             }), 200
 

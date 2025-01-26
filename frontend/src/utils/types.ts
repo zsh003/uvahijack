@@ -13,7 +13,8 @@ export interface ApiResponse<T> {
 /**
  * 启动劫持接口的请求参数
  */
-export interface ReplayHijackParams {
+export interface StartHijackParams {
   deviceIp: string; // 设备 IP
   port: number; // 端口号
+  trafficHex: object;  // 流量Hex字符串 {字符串1,字符串2,..}
 }
