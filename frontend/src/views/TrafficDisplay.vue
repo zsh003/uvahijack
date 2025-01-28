@@ -191,7 +191,7 @@ const formattedHex = computed(() => {
 
   for (let i = 0; i < hexString.length; i += chunkSize) {
     const chunk = hexString.slice(i, i + chunkSize)
-    const offset = i.toString(16).toUpperCase().padStart(8, '0') // 偏移量
+    const offset = i.toString(32).toUpperCase().padStart(8, '0') // 偏移量
 
     // 处理 HEX 值
     const hexValues = []

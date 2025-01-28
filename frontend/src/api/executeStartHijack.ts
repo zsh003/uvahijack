@@ -1,4 +1,4 @@
-// src/api/StartHijack.ts
+// src/api/executeStartHijack.ts
 
 import myAxios from '@/utils/request';
 import type { ApiResponse, StartHijackParams } from '@/utils/types';
@@ -8,7 +8,7 @@ import type { ApiResponse, StartHijackParams } from '@/utils/types';
  * @param params 请求参数
  * @returns 响应数据
  */
-export const startHijack = async (params: StartHijackParams): Promise<ApiResponse<object>> => {
+export const executeStartHijack = async (params: StartHijackParams): Promise<ApiResponse<object>> => {
   try {  // 在.env中配置了接口的根地址
     return await myAxios.post<ApiResponse<object>>('/StartHijack', {
       deviceIp: params.deviceIp,

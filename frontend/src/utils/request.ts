@@ -23,6 +23,7 @@ class AxiosRequest {
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+        console.log("请求发送成功：", config);
         return config;
       },
       function(error: AxiosError) {
@@ -39,7 +40,7 @@ class AxiosRequest {
         if (status === 401) {
           return Promise.reject(new Error(statusText || '未知错误'));
         }
-        console.log(response);
+        console.log("成功接收响应：", response);
 
         return response;
       },

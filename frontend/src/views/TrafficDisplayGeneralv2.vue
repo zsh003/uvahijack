@@ -55,7 +55,7 @@ const formattedHex = computed(() => {
   // 遍历 HEX 字符串，按 chunkSize 分组
   for (let i = 0; i < hexString.length; i += chunkSize) {
     const chunk = hexString.slice(i, i + chunkSize);
-    const offset = i.toString(16).toUpperCase().padStart(8, '0'); // 偏移量
+    const offset = i.toString(32).toUpperCase().padStart(8, '0'); // 偏移量
     const hexValues = chunk.match(/.{1,2}/g)?.join(' ') || ''; // HEX 值
 
     // 查找当前行的注解
