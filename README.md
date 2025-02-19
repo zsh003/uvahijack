@@ -10,8 +10,9 @@
 
 启用前端：
 ```cmd
-# Node.js version: 22.12.0
+# Node.js version: v22.12.0
 # npm version: 10.9.0
+# https://mirrors.aliyun.com/nodejs-release/v22.12.0/
 cd frontend
 npm install
 npm run dev
@@ -19,6 +20,7 @@ npm run dev
 启用后端：
 ```cmd
 # Python version: 3.11.9
+# https://www.python.org/downloads/release/python-3119/
 cd backend
 ..\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ..\.venv\Scripts\python.exe -m flask run
