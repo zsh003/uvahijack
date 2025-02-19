@@ -10,6 +10,8 @@
 
 启用前端：
 ```cmd
+# Node.js version: 22.12.0
+# npm version: 10.9.0
 cd frontend
 npm install
 npm run dev
@@ -21,17 +23,7 @@ cd backend
 ..\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ..\.venv\Scripts\python.exe -m flask run
 ```
-注：我使用Pycharm作为IDE，Python虚拟环境位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python，根据实际情况调整。
+注：我使用Pycharm作为IDE，通过本地Python创建虚拟环境，虚拟环境路径位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python，根据实际情况调整。
 
-若使用waitress模拟生产环境的话需要修改run.py：
-```python
-from waitress import serve
-from app import create_app
-
-app = create_app()
-
-if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
-```
-python run.py 即可让Flask应用通过waitress运行，用于测试生产环境。
+若使用Linux操作系统，创建虚拟环境后执行`../.venv/Script/activate`即可激活虚拟环境，无需在命令中再指定python路径。
 
