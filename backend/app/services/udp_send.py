@@ -1,7 +1,7 @@
 import socket
 
 # 定义源 IP 和端口
-src_ip = "192.168.169.3"
+src_ip = "192.168.169.2"
 src_port = 50657
 
 # 定义目标 IP 和端口
@@ -32,7 +32,7 @@ def throttle_start():
 def throttle_stop():
     sock.sendto(data_throttle_stop, (dst_ip, dst_port))
 
-# throttle_start()
+#throttle_start()
 throttle_stop()
 print(f"数据包已发送到 {dst_ip}:{dst_port}")
 

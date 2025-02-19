@@ -1,10 +1,16 @@
-import uuid  # 用于获取本地 MAC 地址
-from scapy.all import Ether, IP, UDP, Raw
 
+from scapy.all import Ether, IP, UDP, Raw, get_if_hwaddr
+"""
+import uuid  # 用于获取本地 MAC 地址
 def get_local_mac():
     mac = uuid.getnode()  # 获取硬件地址
     mac_address = ':'.join(f"{(mac >> i) & 0xFF:02x}" for i in range(40, -1, -8))
     return mac_address
+"""
+# 获取本地MAC地址
+def get_local_mac(iface):
+    return get_if_hwaddr(iface)
+
 def get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, data):
 
     data = bytes.fromhex(data)
@@ -16,7 +22,7 @@ def get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, data):
     ip_layer = IP(src=src_ip, dst=dst_ip)
 
     # 构造 UDP 层
-    udp_layer = UDP(sport=dst_port, dport=src_port)
+    udp_layer = UDP(sport=src_port, dport=dst_port)
 
     # 构造负载 (Raw 层)
     payload = Raw(load=data)
@@ -48,7 +54,19 @@ if __name__ == '__main__':
     srcIp = '192.168.169.2'
     srcPort = 23456
 
-    data = trafficData1
-    result = get_packet_raw(dstMac, dstIp, dstPort, srcMac, srcIp, srcPort, data)
+    packet1 = get_packet_raw(dstMac, dstIp, dstPort, srcMac, srcIp, srcPort, trafficData1)
+    packet2 = get_packet_raw(dstMac, dstIp, dstPort, srcMac, srcIp, srcPort, trafficData2)
 
-    print(result)
+    from scapy.all import sendp, conf
+
+    def send_packet_raw(packet):
+        packet = bytes.fromhex(packet)
+        # 获取系统默认接口
+        default_iface = conf.iface
+        # print(f"\nDefault network interface: {default_iface}")
+        # 发送数据包
+        sendp(packet, iface=default_iface, verbose=True)
+        print(f"Sent packet: {bytes(packet).hex()}")
+
+    send_packet_raw(packet1)
+    send_packet_raw(packet2)
