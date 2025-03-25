@@ -14,6 +14,7 @@ export interface ApiResponse<T> {
  * 发送流量的请求参数
  */
 export interface SendPacketParams {
+  iface: string;   // 网卡
   packet: object;  // 流量Hex字符串 {字符串1,字符串2,..}
 }
 
@@ -36,5 +37,7 @@ export interface GetPacketParams {
   srcMac: string;       // 源MAC地址
   srcIp: string;        // 源IP
   srcPort: number;      // 源端口
-  trafficHex: object         // 流量Hex字符串 {字符串1, 字符串2, ...}
+  iface: string;        // 网卡
+  timestamp: string;    // 时间戳
+  instruct: object;     // 指令
 }

@@ -7,14 +7,17 @@ from .services.send_packet_service import send_packet_raw
 
 # 定义路由和视图函数
 def init_routes(app):
-    @app.route('/api/SendPacket', methods=['POST'])
+    @app.route('/api/SendCustomPacket', methods=['POST'])
     def send_packet():
         try:
             data = request.json
+            iface = data['iface']
             packets = data.get('packet')
 
             for key, packet in packets.items():
-                send_packet_raw(packet)
+                if packet == "":
+                    continue
+                send_packet_raw(iface, packet)
 
             return jsonify({
                 "message": "Send packet successfully",
@@ -23,7 +26,7 @@ def init_routes(app):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    @app.route('/api/GetPacket', methods=['POST'])
+    @app.route('/api/GetCustomPacket', methods=['POST'])
     def get_packet():
         try:
             data = request.json
@@ -33,16 +36,15 @@ def init_routes(app):
             src_mac = data.get('srcMac')
             src_ip = data.get('srcIp')
             src_port = data.get('srcPort')
-            payloads = data.get('trafficHex')
+            iface = iface = data.get('iface')
+            timestamp = data.get('timestamp')
+            instruct = data.get('instruct')
 
-            result = {}
-            for key, payload in payloads.items():
-                packet = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, payload)
-                result[key] = packet
+            packet = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, timestamp, instruct)
 
             return jsonify({
                 "message": "Get traffic successfully",
-                "result": result
+                "result": {packet}
             }), 200
 
         except Exception as e:
@@ -62,6 +64,17 @@ def init_routes(app):
 
             # 调用外部文件的处理逻辑
             result = throttle_start_hijack(device_ip, port)
+
+            # result = {}
+            # for key, payload in payloads.items():
+            #     packet = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, timestamp,
+            #                             instruct)
+            #     result[key] = packet
+            #
+            # return jsonify({
+            #     "message": "Get traffic successfully",
+            #     "result": result
+            # }), 200
 
             return jsonify({
                 "message": "Hijack started successfully",

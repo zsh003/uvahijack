@@ -76,7 +76,7 @@ import { executeStartHijack } from '@/api/executeStartHijack.ts';
 import type { GetPacketParams } from '@/utils/types'
 import { useTrafficHexStore } from '@/stores/useTrafficHexStore.ts'
 import { useTrafficHexStore2 } from '@/stores/useTrafficHexStore2.ts'
-import { getPacket } from '@/api/getPacket.ts'
+import { getCustomPacket } from '@/api/getCustomPacket.ts'
 
 const formLayout = 'vertical'; // 设置表单布局
 
@@ -136,8 +136,8 @@ const handleClickMakeTraffic = async () => {
     // 设置按钮加载状态为 true
     isLoadingMakeTraffic.value = true;
 
-    // 调用 getPacket 接口
-    const response = await getPacket(formState.value);
+    // 调用 getCustomPacket 接口
+    const response = await getCustomPacket(formState.value);
     console.log(response.data);
 
     // 获取 data 对象中的所有字符串值

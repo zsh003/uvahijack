@@ -1,4 +1,4 @@
-// src/api/sendPacket.ts
+// src/api/sendCustomPacket.ts
 
 import myAxios from '@/utils/request';
 import type { ApiResponse, SendPacketParams } from '@/utils/types';
@@ -8,9 +8,10 @@ import type { ApiResponse, SendPacketParams } from '@/utils/types';
  * @param params 请求参数
  * @returns 响应数据
  */
-export const sendPacket = async (params: SendPacketParams): Promise<ApiResponse<object>> => {
+export const sendCustomPacket = async (params: SendPacketParams): Promise<ApiResponse<object>> => {
   try {  // 在.env中配置了接口的根地址
-    return await myAxios.post<ApiResponse<object>>('/SendPacket', {
+    return await myAxios.post<ApiResponse<object>>('/SendCustomPacket', {
+      iface: params.iface,
       packet: params.packet
     });
   } catch (error) {

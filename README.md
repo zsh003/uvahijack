@@ -22,10 +22,7 @@ npm run dev
 # Python version: 3.11.9
 # https://www.python.org/downloads/release/python-3119/
 cd backend
-..\.venv\Scripts\python.exe -m pip install -r requirements.txt
-..\.venv\Scripts\python.exe -m flask run
+pip install -r requirements.txt
+flask run
 ```
-注：我使用Pycharm作为IDE，通过本地Python创建虚拟环境，虚拟环境路径位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python，根据实际情况调整。
-
-若使用Linux操作系统，创建虚拟环境后执行`../.venv/Script/activate`即可激活虚拟环境，无需在命令中再指定python路径。
-
+注：我使用Pycharm作为IDE，通过本地Python创建虚拟环境，虚拟环境路径位于`..\.venv\Scripts\python.exe`，执行命令时注意自己的Python是否为当前虚拟环境的Python，如果不是需要手动指定目录。
