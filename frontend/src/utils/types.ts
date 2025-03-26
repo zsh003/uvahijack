@@ -11,6 +11,17 @@ export interface ApiResponse<T> {
 }
 
 /**
+ * 设备信息的请求参数
+ */
+export interface NetworkInterfaceInfo {
+  name: string;       // 网卡名称
+  mac: string;        // MAC地址
+  ipv4?: string;      // IPv4地址
+  ipv6?: string;      // IPv6地址
+  internal: boolean;  // 是否内部接口
+}
+
+/**
  * 发送流量的请求参数
  */
 export interface SendCustomPacketParams {

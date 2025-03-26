@@ -18,7 +18,7 @@
     <h3>设备探测信息</h3>
     <a-list item-layout="horizontal" :data-source="deviceData">
       <template #renderItem="{ item }">
-        <a-list-item>
+        <a-list-item :key="item.title">
           <a-list-item-meta :description="item.description">
             <template #title>
               <a>{{ item.title }}</a>
@@ -49,6 +49,10 @@
 <script setup lang="ts">
 //内容中参数配置固定栏设置
 import { ref } from 'vue';
+import { getLocalDevice } from '@/api/getLocalDevice';
+import type { NetworkInterfaceInfo } from '@/utils/types';
+
+const deviceData = ref<Array<any>>([]);
 
 interface DataItem {
   title: string;
@@ -67,7 +71,7 @@ const connection = navigator.connection || navigator.mozConnection || navigator.
 const wifiData = ref<DataItem[]>([
   {
     title: `有效连接类型： ${connection.effectiveType}网络`,
-    description: `设备状态：${navigator.onLine ? '在线' : '离线'}，物理连接类型： ${connection.type}， 下行速度的最大估计值： ${connection?.downlink+' Mbps' || '未知'}， 往返时延： ${connection?.rtt+' ms' || '未知'}， 是否设置节流： ${connection.saveData}`,
+    description: `设备状态：${navigator.onLine ? '在线' : '离线'}， 下行速度的最大估计值： ${connection?.downlink+' Mbps' || '未知'}， 往返时延： ${connection?.rtt+' ms' || '未知'}， 是否设置节流： ${connection.saveData}`,
     avatar: 'https://joeschmoe.io/api/v1/random'
   }
 ]);
@@ -76,18 +80,6 @@ connection.addEventListener('change', () => {
   console.log("Network type changed to: " + connection.effectiveType);
 });
 
-const deviceData = ref<DataItem[]>([
-  {
-    title: '设备1',
-    description: '描述设备1的信息',
-    avatar: 'https://joeschmoe.io/api/v1/random'
-  },
-  {
-    title: '设备2',
-    description: '描述设备2的信息',
-    avatar: 'https://joeschmoe.io/api/v1/random'
-  }
-]);
 
 // 地理位置信息和错误信息
 const geoPosition = ref<Geoposition | null>(null);
@@ -107,10 +99,28 @@ import { onMounted, onBeforeUnmount } from 'vue';
 /* onMounted 钩子会在其他组件挂载均完成后再调用
 onBeforeUnmount 钩子会在组件卸载之前被调用
 */
-onMounted(() => {
+onMounted(async () => {
   //网络状态更新
   window.addEventListener('online', updateNetworkStatus);
   window.addEventListener('offline', updateNetworkStatus);
+
+  try {
+    const response = await getLocalDevice();  // 修改解构方式
+    console.log('Response:', response);
+    if (response.code === 200) {
+      deviceData.value = response.result
+        .filter((intf: NetworkInterfaceInfo) => intf.ipv4)
+        .map((intf: NetworkInterfaceInfo) => ({
+          title: intf.name,
+          description: `MAC: ${intf.mac} | IPv4: ${intf.ipv4}`,
+          avatar: undefined
+        }));
+    } else {
+      console.error('接口异常:', response.message);
+    }
+  } catch (error) {
+    console.error('请求失败:', error);
+  }
 
   //地理位置信息
   if ('geolocation' in navigator) {

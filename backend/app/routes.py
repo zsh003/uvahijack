@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from time import sleep
+import socket
+import psutil
 
 from .services.hijack_service import throttle_start_hijack
 from .services.hijack_service import throttle_stop_hijack
@@ -101,18 +103,41 @@ def init_routes(app):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    @app.route('api/GetLocalDevice', method=['POST'])
-    def get_mac():
+    @app.route('/api/GetLocalDevice', methods=['GET'])
+    def get_local_device():
         try:
-            data = request.json
-            iface = data.get('iface')
-            local_mac = get_local_mac(iface)
+            result = []
+            # 获取所有网络接口信息
+            addrs = psutil.net_if_addrs()
+            stats = psutil.net_if_stats()
+
+            for interface, addresses in addrs.items():
+                # 过滤无效接口（状态非UP或回环接口）
+                if not stats[interface].isup or interface == 'Loopback Pseudo-Interface 1':
+                    continue
+
+                ipv4 = next((addr.address for addr in addresses if addr.family == socket.AF_INET), None)
+                mac = next((addr.address for addr in addresses if addr.family == psutil.AF_LINK), '00:00:00:00:00:00')
+
+                if ipv4:
+                    result.append({
+                        "name": interface,
+                        "mac": mac.upper().replace('-', ':'),  # 统一MAC地址格式
+                        "ipv4": ipv4,
+                        "internal": False  # Windows下不精确判断内部接口
+                    })
+
             return jsonify({
-                "message": "Get local mac address successfully",
-                "result": local_mac
-            }), 200
+                "code": 200,
+                "message": "Success",
+                "result": result
+            })
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify({
+                "code": 500,
+                "message": "Failed to get network interfaces",
+                "result": None
+            }), 500
 
 
     @app.route('/api/StartHijack', methods=['POST'])
