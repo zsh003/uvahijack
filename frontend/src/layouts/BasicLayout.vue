@@ -65,8 +65,8 @@
                       DDoS攻击劫持
                     </span>
                   </template>
-                  <a-menu-item key="/TcpFlood">TCP泛洪</a-menu-item>
-                  <a-menu-item key="/UdpFlood">UDP泛洪</a-menu-item>
+                  <a-menu-item key="/TcpFlood">TCP泛洪攻击</a-menu-item>
+                  <a-menu-item key="/UdpFlood">UDP泛洪攻击</a-menu-item>
                 </a-sub-menu>
 
               </a-menu>

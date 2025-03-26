@@ -1,6 +1,6 @@
 <template>
   <div id="start-hijack">
-    <a-card title="设置目标参数">
+    <a-card title="自定义二层流量劫持攻击目标参数">
       <template #extra>
         <a-button type="primary" @click="resetToDefaults">填充默认值</a-button>
       </template>
@@ -79,7 +79,7 @@
 
     <TrafficDisplayGeneral/>
 
-    <a-card title="socket代码">
+    <a-card title="流量构造代码">
       <pre><code class="language-python">{{ pythonCode }}</code></pre>
     </a-card>
 
@@ -112,7 +112,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import TrafficDisplayGeneral from '@/views/TrafficDisplayGeneral.vue'
-import { executeStartHijack } from '@/api/executeStartHijack.ts';
 import type { GetPacketParams } from '@/utils/types'
 import { useTrafficHexStore } from '@/stores/useTrafficHexStore.ts'
 import { useTrafficHexStore2 } from '@/stores/useTrafficHexStore2.ts'
@@ -157,6 +156,7 @@ const resetToDefaults = () => {
 };
 
 const pythonCode = ref( `from scapy.all import *
+
 # 构造链路层 (Ethernet)
 ether_layer = Ether(src=local_mac, dst=dst_mac)
 # 构造 IP 层
