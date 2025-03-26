@@ -30,6 +30,15 @@ export interface HijackParams {
 }
 
 /**
+ * 泛洪攻击的请求参数
+ */
+export interface FloodAttackParams {
+  dstIp: string;        // 目标IP
+  dstPort: number;      // 目标端口
+  attackDuration: number;  // 持续时间
+}
+
+/**
  * 获取流量的请求参数
  */
 export interface GetCustomPacketParams {

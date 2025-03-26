@@ -103,8 +103,9 @@ if __name__ == '__main__':
         send(packet1, verbose=0)
 
     throttle_start_3layer()
-    #sleep(3)
-    #throttle_stop_3layer()
+    sleep(3)
+    throttle_stop_3layer()
+
 
     # throttle_start_2layer()
     # sleep(3)
