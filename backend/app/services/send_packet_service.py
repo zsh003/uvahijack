@@ -1,4 +1,4 @@
-from scapy.all import sendp
+from scapy.all import *
 import socket
 
 def send_packet_scapy(iface, packet):
@@ -13,13 +13,21 @@ def send_packet_scapy_from_hex(iface, packet_hex):
     # send(packet, verbose=0)
     print("已发送流量：", packet_hex)
 
+def send_packet_scapy_from_hex_3layer(packet_hex):
+    packet_bytes = bytes.fromhex(packet_hex)
+    packet = IP(packet_bytes)  # 重新构造 Packet 对象
+    # sendp 用于发送链路层（Layer 2）数据包，而 send 用于网络层（Layer 3）
+    send(packet, verbose=0)
+    # send(packet, verbose=0)
+    print("已发送流量：", packet_hex)
+
 # 发送十六进制数据包
 def send_packet_from_hex(iface, packet_hex):
     # 将十六进制字符串转换为字节串
     packet_bytes = bytes.fromhex(packet_hex)
 
     # 创建原始套接字
-    sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
+    sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)  # 注：socket.AF_PACKET只有Linux环境才有，Windows就只能用scapy了
     sock.bind((iface, 0))  # 绑定到指定网络接口
 
     # 发送数据包

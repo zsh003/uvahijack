@@ -1,6 +1,6 @@
 <template>
-  <div id="start-hijack">
-    <a-card title="自定义二层流量劫持攻击目标参数">
+  <div id="custom-hijack">
+    <a-card title="自定义二层恶意流量攻击劫持参数">
       <template #extra>
         <a-button type="primary" @click="resetToDefaults">填充默认值</a-button>
       </template>
@@ -98,13 +98,16 @@
     <!-- 条件渲染Alert组件 -->
     <a-alert
       v-if="showAlert"
-      message="Success Tips"
-      description="Detailed description and advices about successful copywriting."
+      message="Success! 成功执行"
+      description="自定义劫持攻击流量已成功发送"
       type="success"
       show-icon
       closable
       @close="showAlert = false"
     />
+
+    <!-- 自定义三层恶意流量攻击 -->
+    <ThreeLayerAttack/>
 
   </div>
 </template>
@@ -112,11 +115,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import TrafficDisplayGeneral from '@/views/TrafficDisplayGeneral.vue'
-import type { GetPacketParams } from '@/utils/types'
+import ThreeLayerAttack from '@/views/ThreeLayerAttack.vue'
+import type { GetCustomPacketParams } from '@/utils/types'
 import { useTrafficHexStore } from '@/stores/useTrafficHexStore.ts'
 import { useTrafficHexStore2 } from '@/stores/useTrafficHexStore2.ts'
-import { getCustomPacket } from '@/api/getCustomPacket.ts'
-import { sendCustomPacket } from '@/api/sendCustomPacket.ts'
+import { getCustomPacket } from '@/api/getPacket.ts'
+import { sendCustomPacket } from '@/api/sendPacket.ts'
 
 const formLayout = 'vertical'; // 设置表单布局
 
@@ -125,7 +129,7 @@ const trafficHexStore = useTrafficHexStore();
 const trafficHexStore2 = useTrafficHexStore2();
 
 // 定义初始值对象
-const defaultValues = ref<GetPacketParams>({
+const defaultValues = ref<GetCustomPacketParams>({
   dstMac: 'b8:3d:fb:5d:7e:ef', // 目标MAC地址
   dstIp: '192.168.169.1',      // 目标IP
   dstPort: 8800,               // 目标端口
@@ -138,7 +142,7 @@ const defaultValues = ref<GetPacketParams>({
 });
 
 // 创建一个对象来存储表单的状态
-const formState = ref<GetPacketParams>({
+const formState = ref<GetCustomPacketParams>({
   dstMac: '',
   dstIp: '',
   dstPort: 0,
@@ -187,8 +191,6 @@ const handleClickMakeTraffic = async () => {
   try {
     // 设置按钮加载状态为 true
     isLoadingMakeTraffic.value = true;
-
-    console.log(formState.value.instruct);
 
     // 调用 getCustomPacket 接口
     const response = await getCustomPacket(formState.value);
