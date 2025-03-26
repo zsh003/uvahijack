@@ -19,10 +19,12 @@
         <a-card title="流量Hex总览">
           <pre class="hex-output">{{ formattedHex1 }}</pre>
         </a-card>
-        <TrafficDisplayGeneralv2/>
+        <TrafficDisplayGeneralv2
+        :hex-string="trafficHex1"/>
       </a-col>
       <a-col :span="13">
-        <TrafficDisplay/>
+        <TrafficDisplay
+        :hex-string="trafficHex1"/>
       </a-col>
     </a-row>
   </a-modal>
@@ -47,10 +49,12 @@
         <a-card title="流量Hex总览">
           <pre class="hex-output">{{ formattedHex2 }}</pre>
         </a-card>
-        <TrafficDisplayGeneralv2/>
+        <TrafficDisplayGeneralv2
+        :hex-string="trafficHex2"/>
       </a-col>
       <a-col :span="13">
-        <TrafficDisplay/>
+        <TrafficDisplay
+        :hex-string="trafficHex2"/>
       </a-col>
     </a-row>
   </a-modal>

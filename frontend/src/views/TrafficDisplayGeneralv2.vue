@@ -8,11 +8,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-// 假设你有一段 UDP 流量包的 HEX 字符串
-const hexString = 'b83dfb5d7eef4cd577edadbd080045000074b4b440004011b26ec0a8a903c0a8a901c5e0226000604467ef0258000202000100000000f2000000140066148080808000020000000000000000000002990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000324b142d0000';
+const props = defineProps<{
+  hexString: string
+}>()
+const hexString = props.hexString
 
 // 解析 UDP 流量包的结构
-const parsePacket = ({hexString}:{hexString:string}) => {
+const parsePacket = ({ hexString }: { hexString: string }) => {
   const annotations = [];
 
   // Ethernet II (14 bytes)

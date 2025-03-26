@@ -7,7 +7,7 @@ def get_local_mac(iface):
 
 def get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, timestamp, instruct):
     # 应用层数据
-    data = f"ef0258000202000100000000{timestamp}0000140066148080{instruct[0]}80000200000000000000000000{instruct[1]}990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000324b142d0000"
+    data = f"ef0258000202000100000000{timestamp}0000140066148080{instruct[0:2]}80000200000000000000000000{instruct[2:4]}990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000324b142d0000"
     data_hex = bytes.fromhex(data)
 
     # 构造链路层 (Ethernet)
@@ -30,7 +30,7 @@ def get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, 
     print("已构建流量包：")
     print(bytes(packet_real).hex())
 
-    return packet_real
+    return bytes(packet_real).hex()
 
 if __name__ == '__main__':
 
@@ -47,19 +47,24 @@ if __name__ == '__main__':
     dst_port = 8800
 
     def throttle_start():
-        packet1 = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "d500", ["b3", "31"])
-        packet2 = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "df00", ["ff", "7d"])
+        packet1_hex = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "d500", "b331")
+        packet1 = bytes.fromhex(packet1_hex)
         sendp(packet1, iface=iface, verbose=0)
+        #sleep(3)
+
+        packet2_hex = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "df00", "ff7d")
+        packet2 = bytes.fromhex(packet2_hex)
         sendp(packet2, iface=iface, verbose=0)
 
 
     def throttle_stop():
-        packet1 = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "fd00", ["00", "82"])
+        packet1_hex = get_packet_raw(dst_mac, dst_ip, dst_port, src_mac, src_ip, src_port, iface, "fd00", "0082")
+        packet1 = bytes.fromhex(packet1_hex)
         sendp(packet1, iface=iface, verbose=0)
 
     throttle_start()
-    sleep(3)
-    throttle_stop()
+    #sleep(3)
+    #throttle_stop()
 
 
 

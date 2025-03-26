@@ -39,5 +39,5 @@ export interface GetPacketParams {
   srcPort: number;      // 源端口
   iface: string;        // 网卡
   timestamp: string;    // 时间戳
-  instruct: object;     // 指令
+  instruct: string;     // 指令
 }

@@ -43,11 +43,10 @@
         <!-- 新增指令输入行 -->
         <a-row :gutter="24">
           <a-col :span="24">
-            <a-form-item label="指令参数（逗号分隔两个字节）">
+            <a-form-item label="指令参数">
               <a-input
                 v-model:value="formState.instruct"
-                placeholder="示例：b3,31（自动转换为['b3','31']）"
-                @change="(val: string) => formState.instruct = val.split(',')"
+                placeholder="示例：b331"
               />
             </a-form-item>
 
@@ -56,7 +55,7 @@
               type="info"
               show-icon
               :description="`
-                start1: b3,31 ———— start2: ff,7d ———— stop: 00,82 ———— swerve: 01,02 ———— fly1: b3,32 ———— fly2: ff,7d`
+                start1: b331————start2: ff7d————stop: 0082————swerve: 0102————fly1: b332————fly2: ff7d`
               "
               style="margin-bottom: 16px"
             />
@@ -136,7 +135,7 @@ const defaultValues = ref<GetPacketParams>({
   srcPort: 51669,               // 源端口
   iface: 'WLAN',               // 网卡名称
   timestamp: "0100",              // 时间戳
-  instruct: ["b3", "31"]         // 指令
+  instruct: "b331"         // 指令
 });
 
 // 创建一个对象来存储表单的状态
@@ -149,7 +148,7 @@ const formState = ref<GetPacketParams>({
   srcPort: 0,
   iface: '',
   timestamp: '',
-  instruct: []
+  instruct: ''
 });
 
 // 创建一个方法来重置表单状态为初始值
@@ -188,6 +187,8 @@ const handleClickMakeTraffic = async () => {
   try {
     // 设置按钮加载状态为 true
     isLoadingMakeTraffic.value = true;
+
+    console.log(formState.value.instruct);
 
     // 调用 getCustomPacket 接口
     const response = await getCustomPacket(formState.value);
