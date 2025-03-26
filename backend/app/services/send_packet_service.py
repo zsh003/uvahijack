@@ -4,11 +4,9 @@ import socket
 def send_packet_scapy(iface, packet):
     # sendp 用于发送链路层（Layer 2）数据包，而 send 用于网络层（Layer 3）
     sendp(packet, iface=iface, verbose=0)
-    # send(packet, verbose=0)
 
 def send_packet_scapy_from_hex(iface, packet_hex):
     packet = bytes.fromhex(packet_hex)
-    # sendp 用于发送链路层（Layer 2）数据包，而 send 用于网络层（Layer 3）
     sendp(packet, iface=iface, verbose=0)
     # send(packet, verbose=0)
     print("已发送流量：", packet_hex)
@@ -16,7 +14,6 @@ def send_packet_scapy_from_hex(iface, packet_hex):
 def send_packet_scapy_from_hex_3layer(packet_hex):
     packet_bytes = bytes.fromhex(packet_hex)
     packet = IP(packet_bytes)  # 重新构造 Packet 对象
-    # sendp 用于发送链路层（Layer 2）数据包，而 send 用于网络层（Layer 3）
     send(packet, verbose=0)
     # send(packet, verbose=0)
     print("已发送流量：", packet_hex)

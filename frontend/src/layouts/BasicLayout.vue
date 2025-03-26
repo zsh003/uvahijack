@@ -53,21 +53,21 @@
                     </span>
                   </template>
                   <a-menu-item key="/StartHijack">油门启动劫持</a-menu-item>
-                  <a-menu-item key="/StopHijack">油门关闭劫持</a-menu-item>
-                  <a-menu-item key="/FlyHijack">起飞劫持</a-menu-item>
-                  <a-menu-item key="/SwerveHijack">转向劫持</a-menu-item>
+                  <a-menu-item key="/StopHijack">油门停止劫持</a-menu-item>
+                  <a-menu-item key="/FlyHijack">无人机起飞劫持</a-menu-item>
+                  <a-menu-item key="/SwerveHijack">无人机转向劫持</a-menu-item>
                 </a-sub-menu>
 
-                <a-sub-menu key="">
-                  <template #title>
-                    <span>
-                      <laptop-outlined />
-                      DDoS攻击劫持
-                    </span>
-                  </template>
-                  <a-menu-item key="/TcpFlood">TCP泛洪攻击</a-menu-item>
-                  <a-menu-item key="/UdpFlood">UDP泛洪攻击</a-menu-item>
-                </a-sub-menu>
+<!--                <a-sub-menu key="">-->
+<!--                  <template #title>-->
+<!--                    <span>-->
+<!--                      <laptop-outlined />-->
+<!--                      DDoS攻击劫持-->
+<!--                    </span>-->
+<!--                  </template>-->
+<!--                  <a-menu-item key="/TcpFlood">TCP泛洪攻击</a-menu-item>-->
+<!--                  <a-menu-item key="/UdpFlood">UDP泛洪攻击</a-menu-item>-->
+<!--                </a-sub-menu>-->
 
               </a-menu>
             </a-layout-sider>
@@ -91,7 +91,7 @@
         </a-layout-content>
         <!--- 底部栏
         <a-layout-footer class="footer">
-          20211631单凯
+          123
         </a-layout-footer> --->
       </a-layout>
 
